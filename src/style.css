@@ -1,0 +1,42 @@
+html { 
+  height: 100% 
+}
+      
+body { 
+  height: 100%; 
+  margin: 0; 
+  padding: 0 
+}
+
+select {
+  display: block;
+}
+      
+#sidebar { 
+  height: 100%; 
+  width: 20%; 
+  float: left;
+}
+      
+#map-canvas { 
+  height: 100%; 
+  width: 80%; 
+  float: left;
+}
+
+#routeContainer, #routeList {
+  height: 100%;
+  width: 100%;
+}
+
+.routeListItem {
+  width: 100%;
+  clear: both;
+}
+
+.removeLink {
+  float: right;
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}

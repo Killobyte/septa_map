@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDks1w9cpHo_LocbHjnRUD1Bwxt_mqyQbE&sensor=false">
+    </script>
+  </head>
+  <body>
+    <div id="sidebar"> 
+      <h2>My Routes</h2>
+      <div id="routeContainer">
+        <select id="routeSelect"></select>
+        <button id="addRouteButton">+</button>
+        <div id="routeList"></div>
+      </div>
+    </div>
+    <div id="map-canvas"></div>
+    <script type="text/javascript" src="SeptaRoute.js"></script>
+    <script type="text/javascript" src="WhereMySepta.js"></script>
+    <script type="text/javascript" src="routes.js"></script>
+    <script type="text/javascript"> 
+      var whereMySepta = new WhereMySepta(availableRoutes);
+    </script>
+  </body>
+</html>
