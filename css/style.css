@@ -15,8 +15,9 @@ div {
   box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
-button {
-  display: block;
+h3 {
+  margin-top: 5px;
+  margin-bottom: 0px;
 }
       
 #sidebarWrapper { 
@@ -33,12 +34,20 @@ button {
 
 #key {
   height: auto;
-  width: 85%;
+  width: 90%;
   padding: 10px;
   position: absolute;
   bottom: 0;
   border: 1px solid;
   text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+#keyContent {
+  text-align: left;
+  padding-left: 10%;
 }
       
 #map-canvas { 

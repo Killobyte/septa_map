@@ -13,6 +13,8 @@ var WhereMySepta = function(availableRoutes) {
   this.routeListDiv = document.getElementById('routeList');
   this.addRouteButton = document.getElementById('addRouteButton');
   this.addRouteButton.addEventListener('click', this.addSelectedRoute.bind(this));
+  this.recenterButton = document.getElementById('recenterButton');
+  this.recenterButton.addEventListener('click', this.recenterMap.bind(this));
 
   var mapOptions = {
       center: new google.maps.LatLng(this.DEFAULT_LAT, this.DEFAULT_LONG),
@@ -111,6 +113,11 @@ WhereMySepta.prototype.getRoutesCallback = function(route, locations) {
     }
   }
 };
+
+WhereMySepta.prototype.recenterMap = function() {
+  this.map.panTo(new google.maps.LatLng(this.DEFAULT_LAT, this.DEFAULT_LONG));
+  this.map.setZoom(this.DEFAULT_ZOOM);
+}
 
 /* 
  * This is unapologetically stolen from James via 
