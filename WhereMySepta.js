@@ -7,6 +7,7 @@ var WhereMySepta = function(availableRoutes) {
 
   this.availableRoutes = availableRoutes;
   this.addedRoutes = {};
+  //this.locationForVehicle = {};
 
   this.routeSelect = document.getElementById('routeSelect');
   this.routeListDiv = document.getElementById('routeList');
@@ -31,7 +32,7 @@ WhereMySepta.prototype.setUpUI = function() {
     option.value = option.text;
     this.routeSelect.options.add(option);
   }
-}
+};
 
 WhereMySepta.prototype.addSelectedRoute = function() {
   if (this.routeSelect.value != '') {
@@ -58,7 +59,7 @@ WhereMySepta.prototype.addSelectedRoute = function() {
     this.addedRoutes[this.routeSelect.value] = new SeptaRoute(newRouteDiv, newRouteTextDiv, overlay);
     this.routeSelect.options[0].selected = true;
   }
-}
+};
 
 WhereMySepta.prototype.removeLinkClick = function(event) {
   var route = event.target.id;
@@ -78,28 +79,42 @@ WhereMySepta.prototype.updateRoutes = function() {
     this.getJSONP(this.SEPTA_LOCATION_URL_BASE + route + this.SEPTA_LOCATION_URL_TAIL,
         this.getRoutesCallback.bind(this, route));
   }
-}
+};
 
 WhereMySepta.prototype.getRoutesCallback = function(route, locations) {
   for (transType in locations) {
     if (locations[transType].length == 0) {
       this.addedRoutes[route].setText(route + '*')
     } else {
+      this.addedRoutes[route].setText(route)
+      var lastLat;
       for (index in locations[transType]) {
         var loc = locations[transType][index];
         var latlng = new google.maps.LatLng(loc.lat, loc.lng);
         var marker = new google.maps.Marker({
           position: latlng,
           map: this.map,
-          title: loc.Direction
+          title: route + ' ' + loc.Direction + ' to ' + loc.destination,
+          icon: 'septa_icon.png'
         });
-        marker.setMap(this.map);
         this.addedRoutes[route].addMarker(marker);
+        lastLat = loc.lat;
+        /*if (this.locationForVehicle[loc['VehicleID']] != loc.lat) {
+          var now = new Date();
+          console.log('Lat for vehicle ' + loc['VehicleID'] + ' updated from ' + 
+              this.locationForVehicle[loc['VehicleID']] + ' to ' + loc.lat + 
+              ' at ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds());
+        }
+        this.locationForVehicle[loc['VehicleID']] = loc.lat;*/
       }
     }
   }
-}
+};
 
+/* 
+ * This is unapologetically stolen from James via 
+ * http://stackoverflow.com/questions/2499567/how-to-make-a-json-call-to-a-url
+ */
 WhereMySepta.prototype.getJSONP = function(url, success) {
   var ud = '_' + +new Date,
       script = document.createElement('script'),
@@ -113,4 +128,4 @@ WhereMySepta.prototype.getJSONP = function(url, success) {
 
   script.src = url.replace('callback=?', 'callback=' + ud);
   head.appendChild(script);
-}
+};
