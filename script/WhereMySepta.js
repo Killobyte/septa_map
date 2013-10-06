@@ -4,9 +4,7 @@ var WhereMySepta = function(availableRoutes) {
   this.DEFAULT_ZOOM = 13;
   this.SEPTA_LOCATION_URL_BASE = 'http://www3.septa.org/hackathon/TransitView/?route=';
   this.SEPTA_URL_TAIL = '&callback=?';
-  this.SEPTA_STOP_URL_BASE = 'http://www3.septa.org/hackathon/Stops/?req1=';
   this.IMAGE_BASE = 'res/img/';
-  this.SEPTA_ICON = this.IMAGE_BASE + 'septa_icon.gif';
 
   this.availableRoutes = availableRoutes;
   this.addedRoutes = {};
