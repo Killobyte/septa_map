@@ -83,13 +83,13 @@ WhereMySepta.prototype.removeLinkClick = function(event) {
 
 WhereMySepta.prototype.updateRoutes = function() {
   for (var route in this.addedRoutes) {
-    this.addedRoutes[route].removeMarkers();
     this.getJSONP(this.SEPTA_LOCATION_URL_BASE + route + this.SEPTA_URL_TAIL,
         this.getRoutesCallback.bind(this, route));
   }
 };
 
 WhereMySepta.prototype.getRoutesCallback = function(route, locations) {
+  this.addedRoutes[route].removeMarkers();
   for (transType in locations) {
     if (locations[transType].length == 0) {
       this.addedRoutes[route].setText(route + '*')
