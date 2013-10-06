@@ -73,7 +73,6 @@ WhereMySepta.prototype.removeLinkClick = function(event) {
       this.routeListDiv.removeChild(this.routeListDiv.childNodes[index]);
     }
   }
-  delete this.addedStops[route];
   //Remove route overlay
   this.addedRoutes[route].kml.setMap(null);
   this.addedRoutes[route].removeMarkers();
