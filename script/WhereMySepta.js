@@ -4,10 +4,10 @@ var WhereMySepta = function(availableRoutes) {
   this.DEFAULT_ZOOM = 13;
   this.SEPTA_LOCATION_URL_BASE = 'http://www3.septa.org/hackathon/TransitView/?route=';
   this.SEPTA_LOCATION_URL_TAIL = '&callback=?';
+  this.IMAGE_BASE = 'res/img/';
 
   this.availableRoutes = availableRoutes;
   this.addedRoutes = {};
-  //this.locationForVehicle = {};
 
   this.routeSelect = document.getElementById('routeSelect');
   this.routeListDiv = document.getElementById('routeList');
@@ -35,7 +35,8 @@ WhereMySepta.prototype.setUpUI = function() {
 };
 
 WhereMySepta.prototype.addSelectedRoute = function() {
-  if (this.routeSelect.value != '') {
+  if (this.routeSelect.value != '' &&
+      !(this.routeSelect.value in this.addedRoutes)) {
     var overlay = new google.maps.KmlLayer({
       url: 'http://www3.septa.org/transitview/kml/' + this.routeSelect.value + '.kml'
     });
@@ -90,22 +91,19 @@ WhereMySepta.prototype.getRoutesCallback = function(route, locations) {
       var lastLat;
       for (index in locations[transType]) {
         var loc = locations[transType][index];
+        var iconName = loc.Direction;
+        if (iconName == ' ') {
+          iconName = 'undefined';
+        }
         var latlng = new google.maps.LatLng(loc.lat, loc.lng);
         var marker = new google.maps.Marker({
           position: latlng,
           map: this.map,
           title: route + ' ' + loc.Direction + ' to ' + loc.destination,
-          icon: 'septa_icon.png'
+          icon: this.IMAGE_BASE + iconName + '.gif'
         });
         this.addedRoutes[route].addMarker(marker);
         lastLat = loc.lat;
-        /*if (this.locationForVehicle[loc['VehicleID']] != loc.lat) {
-          var now = new Date();
-          console.log('Lat for vehicle ' + loc['VehicleID'] + ' updated from ' + 
-              this.locationForVehicle[loc['VehicleID']] + ' to ' + loc.lat + 
-              ' at ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds());
-        }
-        this.locationForVehicle[loc['VehicleID']] = loc.lat;*/
       }
     }
   }

@@ -9,6 +9,12 @@ body {
   font-family: helvetica;
 }
 
+div {
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
 button {
   display: block;
 }
@@ -21,8 +27,18 @@ button {
 
 #sidebar {
   height: 100%;
-  width: 100%;
-  margin: 10px;
+  padding: 10px;
+  position: relative;
+}
+
+#key {
+  height: auto;
+  width: 85%;
+  padding: 10px;
+  position: absolute;
+  bottom: 0;
+  border: 1px solid;
+  text-align: center;
 }
       
 #map-canvas { 
@@ -31,20 +47,10 @@ button {
   float: left;
 }
 
-#routeContainer {
-  height: 100%;
-  width: 90%;
-}
-
-#routeList {
-  height: 100%;
-  margin-top: 10px;
-}
-
 .routeListItem {
+  height: auto;
   width: 100%;
   clear: both;
-  border-top: 1px solid;
 }
 
 .removeLink {
