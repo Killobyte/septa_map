@@ -8,6 +8,7 @@ var WhereMySepta = function(availableRoutes) {
 
   this.availableRoutes = availableRoutes;
   this.addedRoutes = {};
+  window['scriptCounter'] = 0;
 
   this.routeSelect = document.getElementById('routeSelect');
   this.routeListDiv = document.getElementById('routeList');
@@ -129,8 +130,12 @@ WhereMySepta.prototype.getJSONP = function(url, success) {
       head = document.getElementsByTagName('head')[0]  ||
           document.documentElement;
 
+  window.console.log('ud = ' + ud);
+
   window[ud] = function(data) {
-      head.removeChild(script);
+      if (script.parentNode == head) {
+        head.removeChild(script);
+      }
       success && success(data);
   };
 
