@@ -3,8 +3,10 @@ var WhereMySepta = function(availableRoutes) {
   this.DEFAULT_LONG = -75.163565;
   this.DEFAULT_ZOOM = 13;
   this.SEPTA_LOCATION_URL_BASE = 'http://www3.septa.org/hackathon/TransitView/?route=';
-  this.SEPTA_LOCATION_URL_TAIL = '&callback=?';
+  this.SEPTA_URL_TAIL = '&callback=?';
+  this.SEPTA_STOP_URL_BASE = 'http://www3.septa.org/hackathon/Stops/?req1=';
   this.IMAGE_BASE = 'res/img/';
+  this.SEPTA_ICON = this.IMAGE_BASE + 'septa_icon.gif';
 
   this.availableRoutes = availableRoutes;
   this.addedRoutes = {};
@@ -35,40 +37,46 @@ WhereMySepta.prototype.setUpUI = function() {
 };
 
 WhereMySepta.prototype.addSelectedRoute = function() {
-  if (this.routeSelect.value != '' &&
-      !(this.routeSelect.value in this.addedRoutes)) {
+  var route = this.routeSelect.value;
+  if (route != '' && !(route in this.addedRoutes)) {
+    // Add overlay for route
     var overlay = new google.maps.KmlLayer({
-      url: 'http://www3.septa.org/transitview/kml/' + this.routeSelect.value + '.kml'
+      url: 'http://www3.septa.org/transitview/kml/' + route + '.kml'
     });
     overlay.setMap(this.map);
+    // Add route to list
     var newRouteDiv = document.createElement('div');
     newRouteDiv.className = 'routeListItem';
-    newRouteDiv.id = this.routeSelect.value;
+    newRouteDiv.id = route;
     var newRouteTextDiv = document.createElement('div');
-    var newRouteText = document.createTextNode(this.routeSelect.value);
+    var newRouteText = document.createTextNode(route);
     newRouteTextDiv.style.float = 'left';
     newRouteTextDiv.appendChild(newRouteText);
     newRouteDiv.appendChild(newRouteTextDiv);
     var removeLinkDiv = document.createElement('div');
     var removeLink = document.createTextNode('remove');
-    removeLinkDiv.id = this.routeSelect.value;
+    removeLinkDiv.id = route;
     removeLinkDiv.className = 'removeLink';
     removeLinkDiv.appendChild(removeLink);
     removeLinkDiv.addEventListener('click', this.removeLinkClick.bind(this));
     newRouteDiv.appendChild(removeLinkDiv);
     this.routeListDiv.appendChild(newRouteDiv);
-    this.addedRoutes[this.routeSelect.value] = new SeptaRoute(newRouteDiv, newRouteTextDiv, overlay);
+    this.addedRoutes[route] = new SeptaRoute(newRouteDiv, newRouteTextDiv, overlay);
     this.routeSelect.options[0].selected = true;
+
   }
 };
 
 WhereMySepta.prototype.removeLinkClick = function(event) {
   var route = event.target.id;
+  // Remove vehicle markers
   for (index in this.routeListDiv.childNodes) {
     if (this.routeListDiv.childNodes[index].id == route) {
       this.routeListDiv.removeChild(this.routeListDiv.childNodes[index]);
     }
   }
+  delete this.addedStops[route];
+  //Remove route overlay
   this.addedRoutes[route].kml.setMap(null);
   this.addedRoutes[route].removeMarkers();
   delete this.addedRoutes[route];
@@ -77,7 +85,7 @@ WhereMySepta.prototype.removeLinkClick = function(event) {
 WhereMySepta.prototype.updateRoutes = function() {
   for (var route in this.addedRoutes) {
     this.addedRoutes[route].removeMarkers();
-    this.getJSONP(this.SEPTA_LOCATION_URL_BASE + route + this.SEPTA_LOCATION_URL_TAIL,
+    this.getJSONP(this.SEPTA_LOCATION_URL_BASE + route + this.SEPTA_URL_TAIL,
         this.getRoutesCallback.bind(this, route));
   }
 };
@@ -88,7 +96,6 @@ WhereMySepta.prototype.getRoutesCallback = function(route, locations) {
       this.addedRoutes[route].setText(route + '*')
     } else {
       this.addedRoutes[route].setText(route)
-      var lastLat;
       for (index in locations[transType]) {
         var loc = locations[transType][index];
         var iconName = loc.Direction;
@@ -103,7 +110,6 @@ WhereMySepta.prototype.getRoutesCallback = function(route, locations) {
           icon: this.IMAGE_BASE + iconName + '.gif'
         });
         this.addedRoutes[route].addMarker(marker);
-        lastLat = loc.lat;
       }
     }
   }
