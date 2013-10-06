@@ -11,7 +11,7 @@ var WhereMySepta = function(availableRoutes) {
   this.routeSelect = document.getElementById('routeSelect');
   this.routeListDiv = document.getElementById('routeList');
   this.addRouteButton = document.getElementById('addRouteButton');
-  this.addRouteButton.addEventListener('click', this.addRoute.bind(this));
+  this.addRouteButton.addEventListener('click', this.addSelectedRoute.bind(this));
 
   var mapOptions = {
       center: new google.maps.LatLng(this.DEFAULT_LAT, this.DEFAULT_LONG),
@@ -33,38 +33,31 @@ WhereMySepta.prototype.setUpUI = function() {
   }
 }
 
-WhereMySepta.prototype.addRoute = function() {
-  //Add overlay
-  var overlay = new google.maps.KmlLayer({
-    url: 'http://www3.septa.org/transitview/kml/' + this.routeSelect.value + '.kml'
-  });
-  overlay.setMap(this.map);
-
-  var newRouteDiv = this.newRouteDiv();
-  this.routeListDiv.appendChild(newRouteDiv);
-
-  this.addedRoutes[this.routeSelect.value] = new SeptaRoute(newRouteDiv, overlay);
-  
-  this.routeSelect.options[0].selected = true;
-}
-
-WhereMySepta.prototype.newRouteDiv = function() {
-  var newRouteDiv = document.createElement('div');
-  newRouteDiv.className = 'routeListItem';
-  newRouteDiv.id = this.routeSelect.value;
-  var newRouteTextDiv = document.createElement('div');
-  var newRouteText = document.createTextNode(this.routeSelect.value);
-  newRouteTextDiv.style.float = 'left';
-  newRouteTextDiv.appendChild(newRouteText);
-  newRouteDiv.appendChild(newRouteTextDiv);
-  var removeLinkDiv = document.createElement('div');
-  var removeLink = document.createTextNode('remove');
-  removeLinkDiv.id = this.routeSelect.value;
-  removeLinkDiv.className = 'removeLink';
-  removeLinkDiv.appendChild(removeLink);
-  removeLinkDiv.addEventListener('click', this.removeLinkClick.bind(this));
-  newRouteDiv.appendChild(removeLinkDiv);
-  return newRouteDiv;
+WhereMySepta.prototype.addSelectedRoute = function() {
+  if (this.routeSelect.value != '') {
+    var overlay = new google.maps.KmlLayer({
+      url: 'http://www3.septa.org/transitview/kml/' + this.routeSelect.value + '.kml'
+    });
+    overlay.setMap(this.map);
+    var newRouteDiv = document.createElement('div');
+    newRouteDiv.className = 'routeListItem';
+    newRouteDiv.id = this.routeSelect.value;
+    var newRouteTextDiv = document.createElement('div');
+    var newRouteText = document.createTextNode(this.routeSelect.value);
+    newRouteTextDiv.style.float = 'left';
+    newRouteTextDiv.appendChild(newRouteText);
+    newRouteDiv.appendChild(newRouteTextDiv);
+    var removeLinkDiv = document.createElement('div');
+    var removeLink = document.createTextNode('remove');
+    removeLinkDiv.id = this.routeSelect.value;
+    removeLinkDiv.className = 'removeLink';
+    removeLinkDiv.appendChild(removeLink);
+    removeLinkDiv.addEventListener('click', this.removeLinkClick.bind(this));
+    newRouteDiv.appendChild(removeLinkDiv);
+    this.routeListDiv.appendChild(newRouteDiv);
+    this.addedRoutes[this.routeSelect.value] = new SeptaRoute(newRouteDiv, newRouteTextDiv, overlay);
+    this.routeSelect.options[0].selected = true;
+  }
 }
 
 WhereMySepta.prototype.removeLinkClick = function(event) {
@@ -89,16 +82,20 @@ WhereMySepta.prototype.updateRoutes = function() {
 
 WhereMySepta.prototype.getRoutesCallback = function(route, locations) {
   for (transType in locations) {
-    for (index in locations[transType]) {
-      var loc = locations[transType][index];
-      var latlng = new google.maps.LatLng(loc.lat, loc.lng);
-      var marker = new google.maps.Marker({
-        position: latlng,
-        map: this.map,
-        title: loc.Direction
-      });
-      marker.setMap(this.map);
-      this.addedRoutes[route].addMarker(marker);
+    if (locations[transType].length == 0) {
+      this.addedRoutes[route].setText(route + '*')
+    } else {
+      for (index in locations[transType]) {
+        var loc = locations[transType][index];
+        var latlng = new google.maps.LatLng(loc.lat, loc.lng);
+        var marker = new google.maps.Marker({
+          position: latlng,
+          map: this.map,
+          title: loc.Direction
+        });
+        marker.setMap(this.map);
+        this.addedRoutes[route].addMarker(marker);
+      }
     }
   }
 }

@@ -8,14 +8,20 @@ body {
   padding: 0 
 }
 
-select {
+button {
   display: block;
 }
       
-#sidebar { 
+#sidebarWrapper { 
   height: 100%; 
   width: 20%; 
   float: left;
+}
+
+#sidebar {
+  height: 100%;
+  width: 100%;
+  margin: 10px;
 }
       
 #map-canvas { 
@@ -26,7 +32,11 @@ select {
 
 #routeContainer, #routeList {
   height: 100%;
-  width: 100%;
+  width: 90%;
+}
+
+#routeList {
+  margin-top: 10px;
 }
 
 .routeListItem {

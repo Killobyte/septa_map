@@ -1,4 +1,5 @@
-var SeptaRoute = function(textDiv, kml) {
+var SeptaRoute = function(wholeDiv, textDiv, kml) {
+  this.wholeDiv = wholeDiv;
   this.textDiv = textDiv;
   this.kml = kml;
   this.markers = [];
@@ -13,4 +14,8 @@ SeptaRoute.prototype.removeMarkers = function(marker) {
     this.markers[index].setMap(null);
     delete this.markers[index];
   }
+}
+
+SeptaRoute.prototype.setText = function(text) {
+  this.textDiv.textContent = text;
 }
