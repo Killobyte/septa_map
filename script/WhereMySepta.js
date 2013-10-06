@@ -125,12 +125,10 @@ WhereMySepta.prototype.recenterMap = function() {
  * http://stackoverflow.com/questions/2499567/how-to-make-a-json-call-to-a-url
  */
 WhereMySepta.prototype.getJSONP = function(url, success) {
-  var ud = '_' + +new Date,
+  var ud = '_' + ++window['scriptCounter'],
       script = document.createElement('script'),
       head = document.getElementsByTagName('head')[0]  ||
           document.documentElement;
-
-  window.console.log('ud = ' + ud);
 
   window[ud] = function(data) {
       if (script.parentNode == head) {
